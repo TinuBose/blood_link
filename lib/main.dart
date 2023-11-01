@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Blood Link',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: Colors.red[900],
       ),
       home: const MySplashScreen(),
     );
