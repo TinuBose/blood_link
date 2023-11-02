@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:blood_link/global/global.dart';
 import 'package:blood_link/main_screens/home_screen.dart';
 import 'package:blood_link/widgets/custom_text_field.dart';
 import 'package:blood_link/widgets/error_dialog.dart';
@@ -139,7 +140,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> signUpAuthenticateDonor() async {
     User? currentUser;
-    final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
     await firebaseAuth
         .createUserWithEmailAndPassword(
@@ -184,12 +184,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     //save data locally
-    SharedPreferences? sharedPreferences =
-        await SharedPreferences.getInstance();
-    await sharedPreferences.setString("uid", currentUser.uid);
-    await sharedPreferences.setString("email", currentUser.email.toString());
-    await sharedPreferences.setString("name", nameController.text.trim());
-    await sharedPreferences.setString("photoUrl", donorImageUrl);
+    sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences!.setString("uid", currentUser.uid);
+    await sharedPreferences!.setString("email", currentUser.email.toString());
+    await sharedPreferences!.setString("name", nameController.text.trim());
+    await sharedPreferences!.setString("photoUrl", donorImageUrl);
   }
 
   @override

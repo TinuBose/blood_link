@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:blood_link/authentication/auth_screen.dart';
+import 'package:blood_link/global/global.dart';
+import 'package:blood_link/main_screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class MySplashScreen extends StatefulWidget {
@@ -13,8 +15,14 @@ class MySplashScreen extends StatefulWidget {
 class _MySplashScreenState extends State<MySplashScreen> {
   startTimer() {
     Timer(const Duration(seconds: 5), () async {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (c) => const AuthScreen()));
+      //donor is already logged in or not
+      if (firebaseAuth.currentUser != null) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (c) => const HomeScreen()));
+      } else {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (c) => const AuthScreen()));
+      }
     });
   }
 
