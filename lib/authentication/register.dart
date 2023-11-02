@@ -1,5 +1,5 @@
-import 'package:blood_link/widgets/custom_dropdown_field.dart';
 import 'package:blood_link/widgets/custom_text_field.dart';
+import 'package:blood_link/widgets/error_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -23,6 +23,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   TextEditingController locationController = TextEditingController();
 
+  final bloodGroups = [
+    'A+',
+    'A-',
+    'B+',
+    'B-',
+    'O+',
+    'O-',
+    'AB+',
+    'AB-',
+    'BOMBAY'
+  ];
+  String? selectedGroup;
+
   Position? position;
   List<Placemark>? placeMarks;
 
@@ -40,6 +53,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
         '${pMark.subThoroughfare} ${pMark.thoroughfare}, ${pMark.subLocality} ${pMark.locality}, ${pMark.subAdministrativeArea}, ${pMark.administrativeArea} ${pMark.postalCode}, ${pMark.country}';
 
     locationController.text = completeAdress;
+  }
+
+  Future<void> formValidation() async {
+    if (selectedGroup == null) {
+      showDialog(
+          context: context,
+          builder: (c) {
+            return ErrorDialog(message: "Select your blood group");
+          });
+    } else {
+      if (passwordController.text == confirmPasswordController.text) {
+        if (confirmPasswordController.text.isNotEmpty &&
+            emailController.text.isNotEmpty &&
+            nameController.text.isNotEmpty &&
+            phoneController.text.isNotEmpty &&
+            locationController.text.isNotEmpty &&
+            ageController.text.isNotEmpty &&
+            selectedGroup!.isNotEmpty) {
+          //select group
+        } else {
+          showDialog(
+              context: context,
+              builder: (c) {
+                return ErrorDialog(message: "All fields are required!");
+              });
+        }
+      } else {
+        showDialog(
+            context: context,
+            builder: (c) {
+              return ErrorDialog(message: "Password do not match");
+            });
+      }
+    }
   }
 
   @override
@@ -76,13 +123,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   maxlength: 10,
                   textInputType: TextInputType.phone,
                 ),
-                DropButton(),
+                Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    padding: const EdgeInsets.all(8),
+                    margin: const EdgeInsets.all(10),
+                    child: DropdownButtonFormField(
+                        icon: const Icon(Icons.bloodtype),
+                        hint: const Text("Select Your Blood Group"),
+                        items: bloodGroups
+                            .map((e) => DropdownMenuItem(
+                                  value: e,
+                                  child: Text(e),
+                                ))
+                            .toList(),
+                        onChanged: (val) {
+                          selectedGroup = val;
+                        })),
                 CustomTextField(
                   data: Icons.email,
                   controller: emailController,
                   hintText: "Email",
                   isObscre: false,
                   maxlength: 30,
+                  textInputType: TextInputType.emailAddress,
                 ),
                 CustomTextField(
                   data: Icons.lock,
@@ -130,7 +196,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             height: 30,
           ),
           ElevatedButton(
-            onPressed: () => print("Registered"),
+            onPressed: () {
+              formValidation();
+            },
             style: ElevatedButton.styleFrom(
               primary: Colors.red[900],
             ),
