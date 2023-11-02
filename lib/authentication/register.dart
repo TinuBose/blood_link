@@ -1,8 +1,17 @@
+import 'dart:io';
+
+import 'package:blood_link/main_screens/home_screen.dart';
 import 'package:blood_link/widgets/custom_text_field.dart';
 import 'package:blood_link/widgets/error_dialog.dart';
+import 'package:blood_link/widgets/loading_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart' as fStorage;
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -23,6 +32,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   TextEditingController locationController = TextEditingController();
 
+  XFile? imageXFile;
+  final ImagePicker _picker = ImagePicker();
+
   final bloodGroups = [
     'A+',
     'A-',
@@ -38,6 +50,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Position? position;
   List<Placemark>? placeMarks;
+  String donorImageUrl = "";
+  String completeAddress = "";
+
+  Future<void> _getImage() async {
+    imageXFile = await _picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      imageXFile;
+    });
+  }
 
   getCurrentLocation() async {
     Position newPosition = await Geolocator.getCurrentPosition(
@@ -49,44 +70,126 @@ class _RegisterScreenState extends State<RegisterScreen> {
         await placemarkFromCoordinates(position!.latitude, position!.longitude);
 
     Placemark pMark = placeMarks![0];
-    String completeAdress =
+    completeAddress =
         '${pMark.subThoroughfare} ${pMark.thoroughfare}, ${pMark.subLocality} ${pMark.locality}, ${pMark.subAdministrativeArea}, ${pMark.administrativeArea} ${pMark.postalCode}, ${pMark.country}';
 
-    locationController.text = completeAdress;
+    locationController.text = completeAddress;
   }
 
   Future<void> formValidation() async {
-    if (selectedGroup == null) {
+    if (imageXFile == null) {
       showDialog(
           context: context,
           builder: (c) {
-            return ErrorDialog(message: "Select your blood group");
+            return ErrorDialog(message: "Select an Image");
           });
     } else {
-      if (passwordController.text == confirmPasswordController.text) {
-        if (confirmPasswordController.text.isNotEmpty &&
-            emailController.text.isNotEmpty &&
-            nameController.text.isNotEmpty &&
-            phoneController.text.isNotEmpty &&
-            locationController.text.isNotEmpty &&
-            ageController.text.isNotEmpty &&
-            selectedGroup!.isNotEmpty) {
-          //select group
+      if (selectedGroup == null) {
+        showDialog(
+            context: context,
+            builder: (c) {
+              return ErrorDialog(message: "Select your Blood Group");
+            });
+      } else {
+        if (passwordController.text == confirmPasswordController.text) {
+          if (confirmPasswordController.text.isNotEmpty &&
+              emailController.text.isNotEmpty &&
+              nameController.text.isNotEmpty &&
+              phoneController.text.isNotEmpty &&
+              locationController.text.isNotEmpty &&
+              ageController.text.isNotEmpty) {
+            showDialog(
+                context: context,
+                builder: (c) {
+                  return LoadingDialog(message: "Registering your account...");
+                });
+
+            String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+            fStorage.Reference reference = fStorage.FirebaseStorage.instance
+                .ref()
+                .child("donors")
+                .child(fileName);
+            fStorage.UploadTask uploadTask =
+                reference.putFile(File(imageXFile!.path));
+            fStorage.TaskSnapshot taskSnapshot =
+                await uploadTask.whenComplete(() => () {});
+            await taskSnapshot.ref.getDownloadURL().then((url) {
+              donorImageUrl = url;
+
+              //save information to firestore database
+              signUpAuthenticateDonor();
+            });
+          } else {
+            showDialog(
+                context: context,
+                builder: (c) {
+                  return ErrorDialog(message: "All fields are required!");
+                });
+          }
         } else {
           showDialog(
               context: context,
               builder: (c) {
-                return ErrorDialog(message: "All fields are required!");
+                return ErrorDialog(message: "Password do not match");
               });
         }
-      } else {
-        showDialog(
-            context: context,
-            builder: (c) {
-              return ErrorDialog(message: "Password do not match");
-            });
       }
     }
+  }
+
+  Future<void> signUpAuthenticateDonor() async {
+    User? currentUser;
+    final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+
+    await firebaseAuth
+        .createUserWithEmailAndPassword(
+      email: emailController.text.trim(),
+      password: passwordController.text.trim(),
+    )
+        .then((auth) {
+      currentUser = auth.user;
+    }).catchError((error) {
+      Navigator.pop(context);
+      showDialog(
+          context: context,
+          builder: (c) {
+            return ErrorDialog(message: error.message.toString());
+          });
+    });
+    if (currentUser != null) {
+      saveDataToFireStore(currentUser!).then((value) {
+        Navigator.pop(context);
+        //send user to home page
+        Route newRoute = MaterialPageRoute(builder: (c) => const HomeScreen());
+        Navigator.pushReplacement(context, newRoute);
+      });
+    }
+  }
+
+  Future saveDataToFireStore(User currentUser) async {
+    FirebaseFirestore.instance.collection("donors").doc(currentUser.uid).set({
+      "donorUID": currentUser.uid,
+      "donorEmail": currentUser.email,
+      "donorName": nameController.text.trim(),
+      "donorAvatarUrl": donorImageUrl,
+      "donorAge": ageController.text.trim(),
+      "donorPhone": phoneController.text.trim(),
+      "donorBloodGroup": selectedGroup,
+      "address": completeAddress,
+      "status": "approved",
+      "weight": 0.0,
+      "readyToDonate": "yes",
+      "lat": position!.latitude,
+      "lng": position!.longitude,
+    });
+
+    //save data locally
+    SharedPreferences? sharedPreferences =
+        await SharedPreferences.getInstance();
+    await sharedPreferences.setString("uid", currentUser.uid);
+    await sharedPreferences.setString("email", currentUser.email.toString());
+    await sharedPreferences.setString("name", nameController.text.trim());
+    await sharedPreferences.setString("photoUrl", donorImageUrl);
   }
 
   @override
@@ -99,6 +202,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
             key: _formkey,
             child: Column(
               children: [
+                const SizedBox(
+                  height: 10,
+                ),
+                InkWell(
+                  onTap: () {
+                    _getImage();
+                  },
+                  child: CircleAvatar(
+                    radius: MediaQuery.of(context).size.width * 0.20,
+                    backgroundColor: Colors.grey,
+                    backgroundImage: imageXFile == null
+                        ? null
+                        : FileImage(File(imageXFile!.path)),
+                    child: imageXFile == null
+                        ? Icon(
+                            Icons.add_a_photo,
+                            size: MediaQuery.of(context).size.width * 0.20,
+                            color: Colors.red,
+                          )
+                        : null,
+                  ),
+                ),
                 CustomTextField(
                   data: Icons.person,
                   controller: nameController,
@@ -148,7 +273,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   hintText: "Email",
                   isObscre: false,
                   maxlength: 30,
-                  textInputType: TextInputType.emailAddress,
                 ),
                 CustomTextField(
                   data: Icons.lock,

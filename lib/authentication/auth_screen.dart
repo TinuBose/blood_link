@@ -16,6 +16,7 @@ class _AuthScreenState extends State<AuthScreen> {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             backgroundColor: Colors.red[900],
             title: const Text(
               "BloodLink",
