@@ -7,6 +7,7 @@ class CustomTextField extends StatelessWidget {
   final int? maxlength;
   bool? isObscre = true;
   bool? enabled = true;
+  final TextInputType? textInputType;
 
   CustomTextField(
       {this.controller,
@@ -14,7 +15,8 @@ class CustomTextField extends StatelessWidget {
       this.hintText,
       this.isObscre,
       this.enabled,
-      this.maxlength});
+      this.maxlength,
+      this.textInputType});
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +32,7 @@ class CustomTextField extends StatelessWidget {
         controller: controller,
         obscureText: isObscre!,
         maxLength: maxlength,
+        keyboardType: textInputType,
         cursorColor: Theme.of(context).primaryColor,
         decoration: InputDecoration(
           prefixIcon: Icon(
