@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class DropDownButton extends StatefulWidget {
+class DropButton extends StatefulWidget {
   @override
-  State<DropDownButton> createState() => _DropDownButtonState();
+  State<DropButton> createState() => _DropDownButtonState();
 }
 
-class _DropDownButtonState extends State<DropDownButton> {
+class _DropDownButtonState extends State<DropButton> {
   final bloodGroups = [
     'A+',
     'A-',
@@ -29,10 +29,12 @@ class _DropDownButtonState extends State<DropDownButton> {
         padding: const EdgeInsets.all(8),
         margin: const EdgeInsets.all(10),
         child: DropdownButtonFormField(
+            icon: const Icon(Icons.bloodtype),
+            hint: const Text("Select Your Blood Group"),
             items: bloodGroups
                 .map((e) => DropdownMenuItem(
-                      child: Text(e),
                       value: e,
+                      child: Text(e),
                     ))
                 .toList(),
             onChanged: (val) {

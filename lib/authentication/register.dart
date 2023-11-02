@@ -1,3 +1,4 @@
+import 'package:blood_link/widgets/custom_dropdown_field.dart';
 import 'package:blood_link/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 
@@ -54,6 +55,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   maxlength: 10,
                   textInputType: TextInputType.phone,
                 ),
+                DropButton(),
                 CustomTextField(
                   data: Icons.email,
                   controller: emailController,
