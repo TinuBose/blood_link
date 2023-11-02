@@ -1,6 +1,8 @@
 import 'package:blood_link/widgets/custom_dropdown_field.dart';
 import 'package:blood_link/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -20,6 +22,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController confirmPasswordController = TextEditingController();
 
   TextEditingController locationController = TextEditingController();
+
+  Position? position;
+  List<Placemark>? placeMarks;
+
+  getCurrentLocation() async {
+    Position newPosition = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    position = newPosition;
+    placeMarks =
+        await placemarkFromCoordinates(position!.latitude, position!.longitude);
+
+    Placemark pMark = placeMarks![0];
+    String completeAdress =
+        '${pMark.subThoroughfare} ${pMark.thoroughfare}, ${pMark.subLocality} ${pMark.locality}, ${pMark.subAdministrativeArea}, ${pMark.administrativeArea} ${pMark.postalCode}, ${pMark.country}';
+
+    locationController.text = completeAdress;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,14 +103,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   controller: locationController,
                   hintText: "Your Location",
                   isObscre: false,
-                  enabled: false,
+                  enabled: true,
                 ),
                 Container(
                   width: 200,
                   height: 40,
                   alignment: Alignment.center,
                   child: ElevatedButton.icon(
-                    onPressed: () => print("ur location"),
+                    onPressed: () {
+                      getCurrentLocation();
+                    },
                     icon: const Icon(
                       Icons.location_on,
                       color: Colors.white,
