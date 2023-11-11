@@ -72,7 +72,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     Placemark pMark = placeMarks![0];
     completeAddress =
-        '${pMark.subThoroughfare} ${pMark.thoroughfare}, ${pMark.subLocality} ${pMark.locality}, ${pMark.subAdministrativeArea}, ${pMark.administrativeArea} ${pMark.postalCode}, ${pMark.country}';
+        '${pMark.locality},${pMark.administrativeArea}${pMark.postalCode},${pMark.country}';
 
     locationController.text = completeAddress;
   }
