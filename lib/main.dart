@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       // debugShowCheckedModeBanner: false,
+
       title: 'Blood Link',
       theme: ThemeData(
         primaryColor: Colors.red[900],

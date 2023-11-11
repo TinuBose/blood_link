@@ -15,7 +15,6 @@ class MySplashScreen extends StatefulWidget {
 class _MySplashScreenState extends State<MySplashScreen> {
   startTimer() {
     Timer(const Duration(seconds: 5), () async {
-      //donor is already logged in or not
       if (firebaseAuth.currentUser != null) {
         Navigator.push(
             context, MaterialPageRoute(builder: (c) => const HomeScreen()));

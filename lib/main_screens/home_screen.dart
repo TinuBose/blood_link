@@ -1,4 +1,6 @@
 import 'package:blood_link/global/global.dart';
+import 'package:blood_link/main_screens/sub_home_screens/profile_screen.dart';
+import 'package:blood_link/main_screens/sub_home_screens/sub_home.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,24 +19,24 @@ class _HomeScreenState extends State<HomeScreen> {
           appBar: AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: Colors.red[900],
-            title: const Text(
-              "BloodLink",
-              style: TextStyle(
+            title: Text(
+              sharedPreferences!.getString("name")!,
+              style: const TextStyle(
                 fontSize: 20,
                 color: Colors.white,
               ),
             ),
             centerTitle: true,
-            bottom: TabBar(
+            bottom: const TabBar(
               tabs: [
                 Tab(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.people,
                     color: Colors.white,
                   ),
-                  text: sharedPreferences!.getString("name"),
+                  text: "Home",
                 ),
-                const Tab(
+                Tab(
                   icon: Icon(
                     Icons.person,
                     color: Colors.white,
@@ -45,6 +47,15 @@ class _HomeScreenState extends State<HomeScreen> {
               indicatorColor: Colors.white38,
               indicatorWeight: 6,
             ),
+          ),
+          body: Container(
+            color: Colors.white,
+            child:
+                const TabBarView(//use tab bar since we are using tab bar view
+                    children: [
+              SubHomeScreen(),
+              ProfileScreen(),
+            ]),
           ),
         ));
   }
