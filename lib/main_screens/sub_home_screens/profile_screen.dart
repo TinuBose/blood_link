@@ -54,8 +54,8 @@ class _SearchScreenState extends State<SearchScreen> {
               onPressed: () {
                 setState(() {});
               },
-              child: Text("Search")),
-          SizedBox(
+              child: const Text("Search")),
+          const SizedBox(
             height: 10,
           ),
           StreamBuilder(
