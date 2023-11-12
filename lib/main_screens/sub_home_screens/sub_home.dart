@@ -24,52 +24,69 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
                   itemBuilder: (context, index) {
                     final DocumentSnapshot donorSnap =
                         snapshot.data.docs[index];
-                    return Container(
-                      height: 80,
-                      color: Colors.white,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            child: CircleAvatar(
-                              backgroundColor: Colors.red,
-                              radius: 30,
-                              backgroundImage:
-                                  NetworkImage(donorSnap['donorAvatarUrl']),
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        height: 80,
+                        color: Colors.white,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              child: CircleAvatar(
+                                backgroundColor: Colors.red,
+                                radius: 30,
+                                backgroundImage:
+                                    NetworkImage(donorSnap['donorAvatarUrl']),
+                              ),
                             ),
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                donorSnap["donorName"],
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                donorSnap["donorBloodGroup"],
-                              ),
-                              Text(donorSnap["donorPhone"]),
-                              Text(donorSnap["address"]),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              IconButton(
-                                  onPressed: () async {
-                                    final Uri url = Uri(
-                                      scheme: "tel",
-                                      path: donorSnap["donorPhone"],
-                                    );
-                                    if (await canLaunchUrl(url)) {
-                                      await launchUrl(url);
-                                    } else {
-                                      print("cannot dial");
-                                    }
-                                  },
-                                  icon: Icon(Icons.phone))
-                            ],
-                          ),
-                        ],
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  donorSnap["donorName"],
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  donorSnap["donorBloodGroup"],
+                                ),
+                                Text(donorSnap["donorPhone"]),
+                                Text(donorSnap["address"]),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                IconButton(
+                                    onPressed: () async {
+                                      final Uri url = Uri(
+                                        scheme: "tel",
+                                        path: donorSnap["donorPhone"],
+                                      );
+                                      if (await canLaunchUrl(url)) {
+                                        await launchUrl(url);
+                                      } else {
+                                        print("cannot dial");
+                                      }
+                                    },
+                                    icon: const Icon(Icons.phone)),
+                                IconButton(
+                                    onPressed: () async {
+                                      final Uri url = Uri(
+                                        scheme: 'sms',
+                                        path: donorSnap["donorPhone"],
+                                      );
+                                      if (await canLaunchUrl(url)) {
+                                        await launchUrl(url);
+                                      } else {
+                                        print("cannot message");
+                                      }
+                                    },
+                                    icon: Icon(Icons.message))
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   });

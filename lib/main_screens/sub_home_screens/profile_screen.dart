@@ -124,6 +124,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
                     UserModel searchedUser = UserModel.formMap(userMap);
                     return ListTile(
+                      tileColor: Colors.white,
                       leading: CircleAvatar(
                         backgroundImage: NetworkImage(searchedUser.photo!),
                       ),
