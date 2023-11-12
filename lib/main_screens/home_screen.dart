@@ -38,10 +38,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Tab(
                   icon: Icon(
-                    Icons.person,
+                    Icons.search,
                     color: Colors.white,
                   ),
-                  text: "Profile",
+                  text: "Search",
                 ),
               ],
               indicatorColor: Colors.white38,
@@ -54,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const TabBarView(//use tab bar since we are using tab bar view
                     children: [
               SubHomeScreen(),
-              ProfileScreen(),
+              SearchScreen(),
             ]),
           ),
         ));
