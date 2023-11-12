@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SubHomeScreen extends StatefulWidget {
   const SubHomeScreen({super.key});
@@ -54,7 +55,18 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
                           Row(
                             children: [
                               IconButton(
-                                  onPressed: () {}, icon: Icon(Icons.phone))
+                                  onPressed: () async {
+                                    final Uri url = Uri(
+                                      scheme: "tel",
+                                      path: donorSnap["donorPhone"].toString(),
+                                    );
+                                    if (await canLaunchUrl(url)) {
+                                      await launchUrl(url);
+                                    } else {
+                                      print("cannot dial");
+                                    }
+                                  },
+                                  icon: Icon(Icons.phone))
                             ],
                           ),
                         ],
