@@ -58,7 +58,7 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
                                   onPressed: () async {
                                     final Uri url = Uri(
                                       scheme: "tel",
-                                      path: donorSnap["donorPhone"].toString(),
+                                      path: donorSnap["donorPhone"],
                                     );
                                     if (await canLaunchUrl(url)) {
                                       await launchUrl(url);
