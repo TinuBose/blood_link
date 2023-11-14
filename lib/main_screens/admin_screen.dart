@@ -31,17 +31,17 @@ class _AdminScreenState extends State<AdminScreen> {
               tabs: [
                 Tab(
                   icon: Icon(
-                    Icons.people,
+                    Icons.message,
                     color: Colors.white,
                   ),
-                  text: "Home",
+                  text: "Messages",
                 ),
                 Tab(
                   icon: Icon(
-                    Icons.search,
+                    Icons.people,
                     color: Colors.white,
                   ),
-                  text: "Search",
+                  text: "Donors",
                 ),
               ],
               indicatorColor: Colors.white38,
