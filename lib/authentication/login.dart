@@ -1,4 +1,5 @@
 import 'package:blood_link/global/global.dart';
+import 'package:blood_link/main_screens/admin_screen.dart';
 import 'package:blood_link/main_screens/home_screen.dart';
 import 'package:blood_link/widgets/custom_text_field.dart';
 import 'package:blood_link/widgets/error_dialog.dart';
@@ -58,6 +59,12 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pop(context);
         Navigator.push(
             context, MaterialPageRoute(builder: (c) => const HomeScreen()));
+        if (emailController.text.trim() == "admin@gmail.com" &&
+            passwordController.text.trim() == "admin123") {
+          Navigator.pop(context);
+          Navigator.push(
+              context, MaterialPageRoute(builder: (c) => const AdminScreen()));
+        }
       });
     }
   }

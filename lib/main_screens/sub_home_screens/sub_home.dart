@@ -82,7 +82,7 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
                                         print("cannot message");
                                       }
                                     },
-                                    icon: Icon(Icons.message))
+                                    icon: const Icon(Icons.message))
                               ],
                             ),
                           ],
