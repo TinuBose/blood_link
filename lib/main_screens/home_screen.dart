@@ -1,5 +1,6 @@
 import 'package:blood_link/global/global.dart';
 import 'package:blood_link/main_screens/sub_home_screens/profile_screen.dart';
+import 'package:blood_link/main_screens/sub_home_screens/search_screen.dart';
 import 'package:blood_link/main_screens/sub_home_screens/sub_home.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 2,
+        length: 3,
         child: Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
@@ -43,6 +44,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   text: "Search",
                 ),
+                Tab(
+                  icon: Icon(
+                    Icons.person_2,
+                    color: Colors.white,
+                  ),
+                  text: "My Profile",
+                ),
               ],
               indicatorColor: Colors.white38,
               indicatorWeight: 6,
@@ -50,12 +58,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           body: Container(
             color: Colors.white,
-            child:
-                const TabBarView(//use tab bar since we are using tab bar view
-                    children: [
-              SubHomeScreen(),
-              SearchScreen(),
-            ]),
+            child: const TabBarView(
+                //use tab bar since we are using tab bar view
+                children: [SubHomeScreen(), SearchScreen(), ProfileScreen()]),
           ),
         ));
   }
