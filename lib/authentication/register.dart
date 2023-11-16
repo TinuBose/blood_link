@@ -176,9 +176,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       "donorPhone": phoneController.text.trim(),
       "donorBloodGroup": selectedGroup,
       "address": completeAddress,
-      "status": "approved",
-      "weight": 0.0,
-      "readyToDonate": "yes",
+      "status": "user",
+      "weight": "0",
+      "readyToDonate": "no",
       "lat": position!.latitude,
       "lng": position!.longitude,
     });

@@ -14,7 +14,7 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
   final CollectionReference donor =
       FirebaseFirestore.instance.collection("donors");
 
-  final myName = sharedPreferences!.getString("name")!;
+  final myEmail = sharedPreferences!.getString("email")!;
   final admin = "admin";
 
   @override
@@ -29,7 +29,7 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
                   itemBuilder: (context, index) {
                     final DocumentSnapshot donorSnap =
                         snapshot.data.docs[index];
-                    if (donorSnap["donorName"] == myName ||
+                    if (donorSnap["donorEmail"] == myEmail ||
                         donorSnap["donorEmail"] == "admin@gmail.com") {
                       //conditions
                       return Container();

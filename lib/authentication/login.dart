@@ -56,14 +56,15 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     if (currentUser != null) {
       readDataAndSetDataLocally(currentUser!).then((value) {
-        Navigator.pop(context);
-        Navigator.push(
-            context, MaterialPageRoute(builder: (c) => const HomeScreen()));
         if (emailController.text.trim() == "admin@gmail.com" &&
             passwordController.text.trim() == "admin123") {
           Navigator.pop(context);
           Navigator.push(
               context, MaterialPageRoute(builder: (c) => const AdminScreen()));
+        } else {
+          Navigator.pop(context);
+          Navigator.push(
+              context, MaterialPageRoute(builder: (c) => const HomeScreen()));
         }
       });
     }
