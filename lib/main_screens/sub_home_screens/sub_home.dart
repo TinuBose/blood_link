@@ -63,6 +63,7 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
                                   ),
                                   Text(donorSnap["donorPhone"]),
                                   Text(donorSnap["address"]),
+                                  Text(donorSnap["status"]),
                                 ],
                               ),
                               Row(

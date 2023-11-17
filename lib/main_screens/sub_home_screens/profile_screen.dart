@@ -5,6 +5,8 @@ import 'package:blood_link/widgets/error_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -28,6 +30,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? donorAddresInput = '';
   String? donorWeightInput = '';
   String? donorStatusInput = '';
+  double? lat = 0;
+  double? lng = 0;
+  TextEditingController locationController = TextEditingController();
+
+  Position? position;
+  List<Placemark>? placeMarks;
+
+  getCurrentLocation() async {
+    Position newPosition = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    position = newPosition;
+    placeMarks =
+        await placemarkFromCoordinates(position!.latitude, position!.longitude);
+
+    Placemark pMark = placeMarks![0];
+    donorAddresInput =
+        '${pMark.locality},${pMark.administrativeArea}${pMark.postalCode},${pMark.country}';
+    locationController.text = donorAddresInput!;
+  }
 
   Future _getDataFromDatabase() async {
     await FirebaseFirestore.instance
@@ -46,6 +69,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           weight = snapshot.data()!["weight"];
           status = snapshot.data()!["status"];
           age = snapshot.data()!["donorAge"];
+          lat = snapshot.data()!["lat"];
+          lng = snapshot.data()!["lng"];
         });
       }
     });
@@ -63,6 +88,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
         .collection("donors")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .update({"address": donorAddresInput});
+  }
+
+  Future _updateLat() async {
+    await FirebaseFirestore.instance
+        .collection("donors")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update({"lat": position!.latitude});
+  }
+
+  Future _updateLng() async {
+    await FirebaseFirestore.instance
+        .collection("donors")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update({"lng": position!.longitude});
   }
 
   Future _updateDonorWeight() async {
@@ -118,17 +157,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
           return AlertDialog(
             title: const Text("Update your Address here"),
             content: TextField(
+              controller: locationController,
               onChanged: (value) {
                 setState(() {
-                  donorAddresInput = value;
+                  value = locationController.text;
                 });
               },
               decoration: const InputDecoration(hintText: "Type here"),
             ),
             actions: [
+              ElevatedButton.icon(
+                  onPressed: () {
+                    getCurrentLocation();
+                  },
+                  icon: const Icon(Icons.location_on),
+                  label: const Text("Location")),
               ElevatedButton(
                 onPressed: () {
                   _updateDonorLocation();
+                  _updateLat();
+                  _updateLng();
+
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (_) => const HomeScreen()));
                 },
