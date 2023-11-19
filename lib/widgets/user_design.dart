@@ -15,65 +15,69 @@ class UserDesign extends StatefulWidget {
 class _UserDesignState extends State<UserDesign> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Container(
-          height: 250,
-          width: MediaQuery.of(context).size.width,
-          child: Column(
-            children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundImage: NetworkImage(widget.model!.donorAvatarUrl!),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                widget.model!.donorName!,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              Text(widget.model!.donorBloodGroup!),
-              Text(widget.model!.donorPhone!),
-              Text(widget.model!.donorEmail!),
-              Text(widget.model!.status!),
-              Text(widget.model!.address!),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                      onPressed: () async {
-                        final Uri url = Uri(
-                          scheme: "tel",
-                          path: widget.model!.donorPhone,
-                        );
-                        if (await canLaunchUrl(url)) {
-                          await launchUrl(url);
-                        } else {
-                          print("cannot dial");
-                        }
-                      },
-                      icon: const Icon(Icons.phone)),
-                  IconButton(
-                      onPressed: () async {
-                        final Uri url = Uri(
-                          scheme: 'sms',
-                          path: widget.model!.donorPhone,
-                        );
-                        if (await canLaunchUrl(url)) {
-                          await launchUrl(url);
-                        } else {
-                          print("cannot message");
-                        }
-                      },
-                      icon: const Icon(Icons.message))
-                ],
-              ),
-            ],
+    if (widget.model!.donorEmail == "admin@gmail.com") {
+      return Container();
+    } else {
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Container(
+            height: 250,
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              children: [
+                CircleAvatar(
+                  radius: 30,
+                  backgroundImage: NetworkImage(widget.model!.donorAvatarUrl!),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  widget.model!.donorName!,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(widget.model!.donorBloodGroup!),
+                Text(widget.model!.donorPhone!),
+                Text(widget.model!.donorEmail!),
+                Text(widget.model!.status!),
+                Text(widget.model!.address!),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                        onPressed: () async {
+                          final Uri url = Uri(
+                            scheme: "tel",
+                            path: widget.model!.donorPhone,
+                          );
+                          if (await canLaunchUrl(url)) {
+                            await launchUrl(url);
+                          } else {
+                            print("cannot dial");
+                          }
+                        },
+                        icon: const Icon(Icons.phone)),
+                    IconButton(
+                        onPressed: () async {
+                          final Uri url = Uri(
+                            scheme: 'sms',
+                            path: widget.model!.donorPhone,
+                          );
+                          if (await canLaunchUrl(url)) {
+                            await launchUrl(url);
+                          } else {
+                            print("cannot message");
+                          }
+                        },
+                        icon: const Icon(Icons.message))
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 }
