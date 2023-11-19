@@ -138,7 +138,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  Future<void> signUpAuthenticateDonor() async {
+  void signUpAuthenticateDonor() async {
     User? currentUser;
 
     await firebaseAuth
@@ -153,14 +153,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
       showDialog(
           context: context,
           builder: (c) {
-            return ErrorDialog(message: error.message.toString());
+            return ErrorDialog(
+              message: error.message.toString(),
+            ); //the class I created in error_dialog.dart
           });
     });
     if (currentUser != null) {
       saveDataToFireStore(currentUser!).then((value) {
         Navigator.pop(context);
         //send user to home page
-        Route newRoute = MaterialPageRoute(builder: (c) => const HomeScreen());
+        Route newRoute = MaterialPageRoute(builder: (c) => HomeScreen());
         Navigator.pushReplacement(context, newRoute);
       });
     }
@@ -271,7 +273,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   controller: emailController,
                   hintText: "Email",
                   isObscre: false,
-                  maxlength: 30,
                 ),
                 CustomTextField(
                   data: Icons.lock,

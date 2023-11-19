@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:blood_link/authentication/auth_screen.dart';
+import 'package:blood_link/global/global.dart';
 import 'package:blood_link/main_screens/home_screen.dart';
 import 'package:blood_link/widgets/error_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -420,6 +422,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   height: 10,
                 ),
               ],
+            ),
+            ElevatedButton(
+              onPressed: () {
+                firebaseAuth.signOut().then((value) {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (c) => const AuthScreen()));
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.red,
+              ),
+              child: const Text("Logout"),
             ),
           ],
         ),
