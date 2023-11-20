@@ -213,6 +213,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ElevatedButton(
                 onPressed: () {
                   _updateDonorWeight();
+                  if (double.parse(donorWeightInput!) < 45) {
+                    donorStatusInput = "user";
+                    _updateDonorStatus();
+                  }
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (_) => const HomeScreen()));
                 },
