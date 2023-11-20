@@ -23,7 +23,14 @@ class _LoginScreenState extends State<LoginScreen> {
   formValidation() {
     if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
       //login
-      loginNow();
+      if (emailController.text == "admin@gmail.com" &&
+          passwordController.text == "admin123") {
+        Navigator.pop(context);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (c) => const AdminScreen()));
+      } else {
+        loginNow();
+      }
     } else {
       showDialog(
           context: context,
@@ -56,16 +63,9 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     if (currentUser != null) {
       readDataAndSetDataLocally(currentUser!).then((value) {
-        if (emailController.text.trim() == "admin@gmail.com" &&
-            passwordController.text.trim() == "admin123") {
-          Navigator.pop(context);
-          Navigator.push(
-              context, MaterialPageRoute(builder: (c) => const AdminScreen()));
-        } else {
-          Navigator.pop(context);
-          Navigator.push(
-              context, MaterialPageRoute(builder: (c) => const HomeScreen()));
-        }
+        Navigator.pop(context);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (c) => const HomeScreen()));
       });
     }
   }

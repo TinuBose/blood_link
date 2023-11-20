@@ -72,7 +72,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     Placemark pMark = placeMarks![0];
     completeAddress =
-        '${pMark.locality},${pMark.administrativeArea}${pMark.postalCode},${pMark.country}';
+        '${pMark.locality},${pMark.administrativeArea}${pMark.postalCode},${pMark.country}'
+            .toLowerCase();
 
     locationController.text = completeAddress;
   }
@@ -162,7 +163,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       saveDataToFireStore(currentUser!).then((value) {
         Navigator.pop(context);
         //send user to home page
-        Route newRoute = MaterialPageRoute(builder: (c) => HomeScreen());
+        Route newRoute = MaterialPageRoute(builder: (c) => const HomeScreen());
         Navigator.pushReplacement(context, newRoute);
       });
     }
@@ -186,6 +187,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     //save data locally
+
     sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences!.setString("uid", currentUser.uid);
     await sharedPreferences!.setString("email", currentUser.email.toString());

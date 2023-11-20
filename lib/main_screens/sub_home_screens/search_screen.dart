@@ -122,7 +122,6 @@
 //                     Map<String, dynamic> userMap =
 //                         dataSnapshot.docs[0].data() as Map<String, dynamic>;
 
-import 'package:blood_link/models/users.dart';
 //                     UserModel searchedUser = UserModel.formMap(userMap);
 //                     return ListTile(
 //                       tileColor: Colors.white,
@@ -202,7 +201,7 @@ import 'package:blood_link/models/users.dart';
 //     );
 //   }
 // }
-
+import 'package:blood_link/models/users.dart';
 import 'package:blood_link/widgets/user_design.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -252,7 +251,8 @@ class _SearchScreenState extends State<SearchScreen> {
     lat = position!.latitude;
     lng = position!.longitude;
     completeAddress =
-        '${pMark.locality},${pMark.administrativeArea}${pMark.postalCode},${pMark.country}';
+        '${pMark.locality},${pMark.administrativeArea}${pMark.postalCode},${pMark.country}'
+            .toLowerCase();
     locationController.text = completeAddress!;
   }
 

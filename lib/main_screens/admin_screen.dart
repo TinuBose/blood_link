@@ -1,6 +1,7 @@
 import 'package:blood_link/global/global.dart';
 import 'package:blood_link/main_screens/sub_admin_screens.dart/admin_messages.dart';
 import 'package:blood_link/main_screens/sub_admin_screens.dart/donor_details.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class AdminScreen extends StatefulWidget {
@@ -11,6 +12,20 @@ class AdminScreen extends StatefulWidget {
 }
 
 class _AdminScreenState extends State<AdminScreen> {
+  Future<QuerySnapshot>? postDocumentList;
+  String userEmailText = '';
+
+  initSearchDonor(String textEntered) {
+    postDocumentList = FirebaseFirestore.instance
+        .collection("donors")
+        .where("donorEmail", isGreaterThanOrEqualTo: textEntered)
+        .get();
+
+    setState(() {
+      postDocumentList;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(

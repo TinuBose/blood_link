@@ -1,3 +1,4 @@
+import 'package:blood_link/global/global.dart';
 import 'package:blood_link/models/users.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -15,7 +16,7 @@ class UserDesign extends StatefulWidget {
 class _UserDesignState extends State<UserDesign> {
   @override
   Widget build(BuildContext context) {
-    if (widget.model!.donorEmail == "admin@gmail.com") {
+    if (widget.model!.donorEmail == sharedPreferences!.getString("email")) {
       return Container();
     } else {
       return Card(

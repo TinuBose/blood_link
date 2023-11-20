@@ -50,7 +50,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     Placemark pMark = placeMarks![0];
     donorAddresInput =
-        '${pMark.locality},${pMark.administrativeArea}${pMark.postalCode},${pMark.country}';
+        '${pMark.locality},${pMark.administrativeArea}${pMark.postalCode},${pMark.country}'
+            .toLowerCase();
     locationController.text = donorAddresInput!;
   }
 
