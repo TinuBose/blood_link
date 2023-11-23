@@ -59,10 +59,13 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
                                   ),
                                   Text(
                                     donorSnap["donorBloodGroup"],
+                                    style: const TextStyle(color: Colors.red),
                                   ),
                                   Text(donorSnap["donorPhone"]),
                                   Text(donorSnap["address"]),
-                                  Text(donorSnap["status"]),
+                                  Text(
+                                    donorSnap["status"],
+                                  ),
                                 ],
                               ),
                               Row(

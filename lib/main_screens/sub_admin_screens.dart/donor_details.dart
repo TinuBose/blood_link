@@ -55,6 +55,7 @@ class _DonorDetailsState extends State<DonorDetails> {
                                 ),
                                 Text(
                                   donorSnap["donorBloodGroup"],
+                                  style: const TextStyle(color: Colors.red),
                                 ),
                                 Text(donorSnap["donorPhone"]),
                                 Text(donorSnap["address"]),

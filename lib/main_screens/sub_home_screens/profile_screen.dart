@@ -32,6 +32,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? donorAddresInput = '';
   String? donorWeightInput = '';
   String? donorStatusInput = '';
+  String? donorMessageInput = '';
   double? lat = 0;
   double? lng = 0;
   TextEditingController locationController = TextEditingController();
@@ -119,6 +120,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         .collection("donors")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .update({"status": donorStatusInput});
+  }
+
+  Future _updateDonorMessage() async {
+    await FirebaseFirestore.instance
+        .collection("donors")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update({"readyToDonate": donorMessageInput});
   }
 
   _displayTextInputDialog(BuildContext context) async {
@@ -260,6 +268,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           return ErrorDialog(message: "You must be user/donor");
                         });
                   }
+                },
+                style: ElevatedButton.styleFrom(primary: Colors.red),
+                child: const Text(
+                  "Save",
+                  style: TextStyle(color: Colors.black),
+                ),
+              )
+            ],
+          );
+        });
+  }
+
+  _displayMessageInputDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Enter your message"),
+            content: TextField(
+              onChanged: (value) {
+                setState(() {
+                  donorMessageInput = value;
+                });
+              },
+              decoration: const InputDecoration(hintText: "Type here"),
+            ),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  _updateDonorMessage();
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (_) => const HomeScreen()));
                 },
                 style: ElevatedButton.styleFrom(primary: Colors.red),
                 child: const Text(
@@ -428,17 +468,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
-            ElevatedButton(
-              onPressed: () {
-                firebaseAuth.signOut().then((value) {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (c) => const AuthScreen()));
-                });
-              },
-              style: ElevatedButton.styleFrom(
-                primary: Colors.red,
-              ),
-              child: const Text("Logout"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // IconButton(
+                //     onPressed: () {
+                //       //edit tex
+                //       _displayWeightInputDialog(context);
+                //     },
+                //     icon: const Icon(Icons.edit)),
+                ElevatedButton(
+                    onPressed: () {
+                      _displayMessageInputDialog(context);
+                    },
+                    child: const Text("Talk with us")),
+                ElevatedButton(
+                  onPressed: () {
+                    firebaseAuth.signOut().then((value) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (c) => const AuthScreen()));
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.red,
+                  ),
+                  child: const Text("Logout"),
+                ),
+              ],
             ),
           ],
         ),

@@ -38,7 +38,10 @@ class _UserDesignState extends State<UserDesign> {
                   widget.model!.donorName!,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                Text(widget.model!.donorBloodGroup!),
+                Text(
+                  widget.model!.donorBloodGroup!,
+                  style: const TextStyle(color: Colors.red),
+                ),
                 Text(widget.model!.donorPhone!),
                 Text(widget.model!.donorEmail!),
                 Text(widget.model!.status!),
