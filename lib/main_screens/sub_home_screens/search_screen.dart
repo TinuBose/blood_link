@@ -218,13 +218,34 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   Future<QuerySnapshot>? postDocumentList;
   String userAddressText = '';
+  String userGroupText = '';
+  final bloodGroups = [
+    'A+',
+    'A-',
+    'B+',
+    'B-',
+    'O+',
+    'O-',
+    'AB+',
+    'AB-',
+    'BOMBAY'
+  ];
 
   initSearchDonor(String textEntered) {
     postDocumentList = FirebaseFirestore.instance
         .collection("donors")
         .where("address", isGreaterThanOrEqualTo: textEntered)
         .get();
+    setState(() {
+      postDocumentList;
+    });
+  }
 
+  initSearchDonor2(String groupSelected) {
+    postDocumentList = FirebaseFirestore.instance
+        .collection("donors")
+        .where("donorBloodGroup", isGreaterThanOrEqualTo: groupSelected)
+        .get();
     setState(() {
       postDocumentList;
     });
@@ -258,57 +279,95 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-              onPressed: () {
-                getCurrentLocation();
-              },
-              icon: const Icon(
-                Icons.my_location,
-                color: Colors.red,
-              ))
-        ],
-        backgroundColor: Colors.white,
-        title: TextField(
-          controller: locationController,
-          onChanged: (textEntered) {
-            setState(() {
-              userAddressText = textEntered;
-            });
-            initSearchDonor(textEntered);
-          },
-          decoration: InputDecoration(
-            hintText: "Search",
-            hintStyle: const TextStyle(color: Colors.black),
-            suffixIcon: IconButton(
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Scaffold(
+        appBar: AppBar(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(10))),
+          automaticallyImplyLeading: false,
+          leading: DropdownButtonFormField(
+              decoration: const InputDecoration(border: InputBorder.none),
+              hint: const Text("Group"),
+              items: bloodGroups
+                  .map((e) => DropdownMenuItem(
+                        value: e,
+                        child: Text(e),
+                      ))
+                  .toList(),
+              onChanged: (groupSelected) {
+                setState(() {
+                  userGroupText = groupSelected!;
+                });
+                initSearchDonor2(groupSelected!);
+              }),
+          leadingWidth: 100,
+          actions: [
+            IconButton(
                 onPressed: () {
                   initSearchDonor(userAddressText);
+                  initSearchDonor2(userGroupText);
                 },
-                icon: const Icon(Icons.search)),
+                icon: const Icon(
+                  Icons.search,
+                  color: Colors.grey,
+                ))
+          ],
+          backgroundColor: Colors.white,
+          centerTitle: true,
+          title: SizedBox(
+            height: 100,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    TextField(
+                      controller: locationController,
+                      onChanged: (textEntered) {
+                        setState(() {
+                          userAddressText = textEntered;
+                        });
+                        initSearchDonor(textEntered);
+                      },
+                      decoration: InputDecoration(
+                        hintText: "Search",
+                        hintStyle: const TextStyle(color: Colors.black),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            getCurrentLocation();
+                          },
+                          icon: const Icon(Icons.my_location),
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
+        body: FutureBuilder<QuerySnapshot>(
+            future: postDocumentList,
+            builder: (context, AsyncSnapshot snapshot) {
+              return snapshot.hasData
+                  ? ListView.builder(
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (context, index) {
+                        Users model = Users.fromJson(snapshot.data!.docs[index]
+                            .data()! as Map<String, dynamic>);
+                        return UserDesign(
+                          model: model,
+                          context: context,
+                        );
+                      },
+                    )
+                  : const Center(
+                      child: Text("No Records Exist"),
+                    );
+            }),
       ),
-      body: FutureBuilder<QuerySnapshot>(
-          future: postDocumentList,
-          builder: (context, AsyncSnapshot snapshot) {
-            return snapshot.hasData
-                ? ListView.builder(
-                    itemCount: snapshot.data!.docs.length,
-                    itemBuilder: (context, index) {
-                      Users model = Users.fromJson(snapshot.data!.docs[index]
-                          .data()! as Map<String, dynamic>);
-                      return UserDesign(
-                        model: model,
-                        context: context,
-                      );
-                    },
-                  )
-                : const Center(
-                    child: Text("No Records Exist"),
-                  );
-          }),
     );
   }
 }
